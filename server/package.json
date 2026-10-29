@@ -1,0 +1,31 @@
+{
+  "name": "spendwise-server",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "vitest run",
+    "lint": "eslint src tests --max-warnings 0",
+    "seed:demo": "node src/scripts/seedDemo.js"
+  },
+  "dependencies": {
+    "bcryptjs": "latest",
+    "connect-mongo": "latest",
+    "cors": "latest",
+    "dotenv": "latest",
+    "express": "latest",
+    "express-rate-limit": "latest",
+    "helmet": "latest",
+    "mongoose": "latest",
+    "morgan": "latest",
+    "express-session": "latest",
+    "zod": "latest"
+  },
+  "devDependencies": {
+    "eslint": "latest",
+    "supertest": "latest",
+    "vitest": "latest"
+  }
+}

@@ -1,0 +1,11 @@
+import express from "express";
+import { z } from "zod";
+import { requireAuth } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
+import { getCategories, addCategory, deleteCategory } from "../controllers/categoryController.js";
+const router = express.Router();
+router.use(requireAuth);
+router.get("/", getCategories);
+router.post("/", validate(z.object({ name: z.string().trim().min(1).max(40), type: z.enum(["income", "expense"]) })), addCategory);
+router.delete("/:id", deleteCategory);
+export default router;

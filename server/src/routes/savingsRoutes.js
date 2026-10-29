@@ -1,0 +1,14 @@
+import express from "express";
+import { z } from "zod";
+import { requireAuth } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
+import { listSavings, createSavings, getSavings, updateSavings, deleteSavings, addContribution } from "../controllers/savingsController.js";
+const router = express.Router();
+router.use(requireAuth);
+router.get("/", listSavings);
+router.post("/", validate(z.object({ name: z.string().trim().min(1).max(80), targetAmountMinor: z.number().int().positive(), targetDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(), description: z.string().max(500).optional() })), createSavings);
+router.get("/:id", getSavings);
+router.patch("/:id", validate(z.object({ name: z.string().trim().min(1).max(80).optional(), targetAmountMinor: z.number().int().positive().optional(), targetDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).nullable().optional(), description: z.string().max(500).optional(), status: z.enum(["active", "completed"]).optional() })), updateSavings);
+router.delete("/:id", deleteSavings);
+router.post("/:id/contributions", validate(z.object({ amountMinor: z.number().int().positive(), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/), note: z.string().max(200).optional() })), addContribution);
+export default router;

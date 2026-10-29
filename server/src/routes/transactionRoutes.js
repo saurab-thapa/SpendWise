@@ -1,0 +1,14 @@
+import express from "express";
+import { z } from "zod";
+import { requireAuth } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
+import { createTransaction, listTransactions, getTransaction, updateTransaction, deleteTransaction } from "../controllers/transactionController.js";
+const router = express.Router();
+const schema = z.object({ type: z.enum(["income", "expense"]), amountMinor: z.number().int().positive(), category: z.string().trim().min(1).max(40), description: z.string().trim().min(1).max(120), notes: z.string().max(500).optional().default(""), date: z.string().regex(/^\d{4}-\d{2}-\d{2}$/) });
+router.use(requireAuth);
+router.get("/", validate(z.object({ page: z.coerce.number().int().min(1).optional(), limit: z.coerce.number().int().min(1).max(100).optional(), type: z.enum(["income", "expense"]).optional(), category: z.string().optional(), search: z.string().max(120).optional(), from: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), to: z.string().regex(/^\d{4}-\d{2}-\d{2}$/).optional(), sort: z.enum(["date", "amount"]).optional(), direction: z.enum(["asc", "desc"]).optional() }), "query"), listTransactions);
+router.post("/", validate(schema), createTransaction);
+router.get("/:id", getTransaction);
+router.patch("/:id", validate(schema), updateTransaction);
+router.delete("/:id", deleteTransaction);
+export default router;

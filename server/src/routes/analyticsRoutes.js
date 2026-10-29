@@ -1,0 +1,11 @@
+import express from "express";
+import { z } from "zod";
+import { requireAuth } from "../middleware/auth.js";
+import { validate } from "../middleware/validate.js";
+import { summary, spendingByCategory, monthlyTrends } from "../controllers/analyticsController.js";
+const router = express.Router();
+router.use(requireAuth);
+router.get("/summary", validate(z.object({ month: z.string().regex(/^\d{4}-\d{2}$/).optional() }), "query"), summary);
+router.get("/spending-by-category", validate(z.object({ month: z.string().regex(/^\d{4}-\d{2}$/).optional() }), "query"), spendingByCategory);
+router.get("/monthly-trends", validate(z.object({ fromMonth: z.string().regex(/^\d{4}-\d{2}$/).optional(), toMonth: z.string().regex(/^\d{4}-\d{2}$/).optional() }), "query"), monthlyTrends);
+export default router;
